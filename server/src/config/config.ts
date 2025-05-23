@@ -10,6 +10,10 @@ const config = {
     mongodb:{
         uri:process.env.MONGODB_URI
     },
+    api:{
+      base:"/api",
+      version:"/v1"
+    },
     jwt:{
         secret: process.env.JWT_SECRET as Secret,
         expiresIn: "24h"

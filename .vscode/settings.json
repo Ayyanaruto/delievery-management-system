@@ -1,0 +1,115 @@
+{
+    // Editor Settings
+    "editor.fontSize": 14,
+    "editor.fontFamily": "'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace",
+    "editor.fontLigatures": true,
+    "editor.lineHeight": 1.5,
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.wordWrap": "on",
+    "editor.minimap.enabled": true,
+    "editor.minimap.maxColumn": 120,
+    "editor.rulers": [80, 120],
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit",
+        "source.organizeImports": "explicit"
+    },
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": true
+    },
+    "editor.suggestSelection": "first",
+    "editor.acceptSuggestionOnCommitCharacter": false,
+    "editor.snippetSuggestions": "top",
+    "editor.inlineSuggest.enabled": true,
+
+    // File Management
+    "files.autoSave": "onFocusChange",
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "files.exclude": {
+        "**/node_modules": true,
+        "**/dist": true,
+        "**/build": true,
+        "**/.git": true,
+        "**/.DS_Store": true
+    },
+
+    // Search Settings
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/dist": true,
+        "**/build": true,
+        "**/*.log": true
+    },
+
+    // Terminal
+    "terminal.integrated.fontSize": 13,
+    "terminal.integrated.fontFamily": "'Fira Code', monospace",
+    "terminal.integrated.cursorBlinking": true,
+
+    // Explorer
+    "explorer.confirmDelete": false,
+    "explorer.confirmDragAndDrop": false,
+    "explorer.compactFolders": false,
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+        "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
+        "*.jsx": "${capture}.js",
+        "*.ts": "${capture}.js, ${capture}.d.ts.map, ${capture}.d.ts, ${capture}.js.map",
+        "*.tsx": "${capture}.ts",
+        "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml"
+    },
+
+    // Workbench
+    "workbench.colorTheme": "One Dark Pro Darker",
+    "workbench.iconTheme": "material-icon-theme",
+    "workbench.startupEditor": "newUntitledFile",
+    "workbench.editor.enablePreview": false,
+    "workbench.editor.closeOnFileDelete": true,
+    "workbench.tree.indent": 15,
+
+    // Language Specific
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[css]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+
+    // Git
+    "git.autofetch": true,
+    "git.confirmSync": false,
+    "git.enableSmartCommit": true,
+    "git.postCommitCommand": "sync",
+
+    // Extensions
+    "emmet.includeLanguages": {
+        "javascript": "javascriptreact",
+        "typescript": "typescriptreact"
+    },
+    "eslint.validate": ["javascript", "typescript", "javascriptreact", "typescriptreact"],
+    "prettier.requireConfig": true,
+    "prettier.useEditorConfig": false,
+
+    // Performance
+    "typescript.preferences.includePackageJsonAutoImports": "auto",
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "javascript.updateImportsOnFileMove.enabled": "always"
+}
