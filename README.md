@@ -74,7 +74,7 @@ A comprehensive delivery management platform built with Next.js frontend and Nod
   Create a `.env` file in web folder and add the following variables:
   ```plaintext
   NEXT_PUBLIC_API_URL=http://localhost:3000/api
-  NEXT_GOODLE_MAPS_API_KEY=your_google_maps_api_key
+  NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
   ```
 
   **How to get your Google Maps API key:**
