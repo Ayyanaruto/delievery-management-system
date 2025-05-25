@@ -52,7 +52,7 @@ A comprehensive delivery management platform built with Next.js frontend and Nod
 
 1. **Clone the repository**
   ```bash
-  git clone <repository-url>
+  git clone https://github.com/Ayyanaruto/delievery-management-system.git
   cd rentkar
   ```
 
