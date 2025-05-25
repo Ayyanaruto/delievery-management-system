@@ -12,7 +12,7 @@
     "build:server": "cd server && npm run build",
     "build:web": "cd web && npm run build",
     "start": "npm run seed && concurrently \"npm run start:server\" \"npm run start:web\"",
-    "start:prod": "npm run seed && concurrently \"npm run start:server\" \"npm run start:web\"",
+    "start:prod": "concurrently \"npm run start:server\" \"npm run start:web\"",
     "start:server": "cd server && npm start",
     "start:web": "cd web && npm start",
     "install:all": "npm install && cd server && npm install && cd ../web && npm install",
