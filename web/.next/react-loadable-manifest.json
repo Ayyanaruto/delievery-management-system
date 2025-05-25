@@ -1,0 +1,29 @@
+{
+  "app/admin/orders/[id]/page.tsx -> @/components/order-map": {
+    "id": 2665,
+    "files": [
+      "static/css/857aa62baa17c894.css",
+      "static/chunks/d0deef33.5551c27c44e59cec.js",
+      "static/chunks/89.45c1ce028661a9b1.js",
+      "static/chunks/665.a481889dd9549f73.js"
+    ]
+  },
+  "app/partner/dashboard/page.tsx -> @/components/order-map": {
+    "id": 2665,
+    "files": [
+      "static/css/857aa62baa17c894.css",
+      "static/chunks/d0deef33.5551c27c44e59cec.js",
+      "static/chunks/89.45c1ce028661a9b1.js",
+      "static/chunks/665.a481889dd9549f73.js"
+    ]
+  },
+  "app/partner/orders/[id]/page.tsx -> @/components/order-map": {
+    "id": 2665,
+    "files": [
+      "static/css/857aa62baa17c894.css",
+      "static/chunks/d0deef33.5551c27c44e59cec.js",
+      "static/chunks/89.45c1ce028661a9b1.js",
+      "static/chunks/665.a481889dd9549f73.js"
+    ]
+  }
+}

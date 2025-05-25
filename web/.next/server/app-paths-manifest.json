@@ -1,0 +1,16 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/admin/dashboard/page": "app/admin/dashboard/page.js",
+  "/admin/orders/[id]/assign/page": "app/admin/orders/[id]/assign/page.js",
+  "/admin/orders/[id]/page": "app/admin/orders/[id]/page.js",
+  "/admin/orders/[id]/update/page": "app/admin/orders/[id]/update/page.js",
+  "/admin/orders/new/page": "app/admin/orders/new/page.js",
+  "/admin/partners/[id]/page": "app/admin/partners/[id]/page.js",
+  "/admin/partners/[id]/update/page": "app/admin/partners/[id]/update/page.js",
+  "/login/page": "app/login/page.js",
+  "/page": "app/page.js",
+  "/partner/dashboard/page": "app/partner/dashboard/page.js",
+  "/partner/profile/page": "app/partner/profile/page.js",
+  "/register/page": "app/register/page.js",
+  "/partner/orders/[id]/page": "app/partner/orders/[id]/page.js"
+}
