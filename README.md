@@ -74,7 +74,7 @@ A comprehensive delivery management platform built with Next.js frontend and Nod
   Create a `.env` file in web folder and add the following variables:
   ```plaintext
   NEXT_PUBLIC_API_URL=http://localhost:3000/api
-  NEXT_GOODLE_MAPS_API_KEY=your_google_maps_api_key
+  NEXT_PUBLIC_GOODLE_MAPS_API_KEY=your_google_maps_api_key
   ```
 
   **How to get your Google Maps API key:**
@@ -90,6 +90,10 @@ A comprehensive delivery management platform built with Next.js frontend and Nod
   ```bash
   npm run seed
   ```
+
+  **Sample credentials for testing:**
+  - Admin: `admin@rentkar.com` / `admin123`
+  - Partners: `john.doe@partner.com` / `partner123` (and similar for other partners)
 
 5. **Start the development server**
   ```bash
