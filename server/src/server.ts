@@ -11,7 +11,9 @@ import logger from "./lib/logger";
 import { errorHandler } from "./middleware/errorHandler";
 import { morganMiddleware } from "./middleware/morganMiddleware";
 
-import { authRoutes } from "./api/v1/auth/auth.router";
+import authRoutes from "./api/v1/auth/auth.routes";
+import orderRoutes from "./api/v1/orders/orders.routes";
+import partnerRoutes from "./api/v1/partners/partner.routes";
 
 const app = express();
 const base = config.api.base
@@ -36,6 +38,8 @@ app.get("/", (_req, res) => {
   res.send("Rentkar Delivery Management API");
 });
 app.use(`${base}${version}/auth`, authRoutes);
+app.use(`${base}${version}/partners`, partnerRoutes)
+app.use(`${base}${version}/orders`, orderRoutes)
 
 app.use(errorHandler);
 startServer().catch((err) => {

@@ -1,7 +1,7 @@
 import { ROLE } from "@/constants/constant";
-import { Schema } from "mongoose";
+import { Document, Schema } from "mongoose";
 
-export interface IUser {
+export interface IUser extends Document {
   name: String;
   email: String;
   password: String;
@@ -33,4 +33,3 @@ export interface TokenPayload{
     partnerId:Schema.Types.ObjectId | string
   }
 }
-

@@ -1,9 +1,9 @@
-import { Schema, model } from "mongoose";
 import {
   DELIVERY_PARTNER_STATUS,
   VALIDATION_ERROR_MESSAGE,
 } from "@/constants/constant";
 import { validateEmail } from "@/lib/validateEmail";
+import { Schema, model } from "mongoose";
 import { IPartner } from "./partner.types";
 
 const partnerSchema = new Schema<IPartner>(
@@ -25,16 +25,11 @@ const partnerSchema = new Schema<IPartner>(
       type: String,
       required: [true, VALIDATION_ERROR_MESSAGE.REQUIRED_PHONE],
       minlength: [10, VALIDATION_ERROR_MESSAGE.INVALID_PHONE],
+      index: true,
     },
     status: {
       type: String,
-      enum: [
-        DELIVERY_PARTNER_STATUS.ASSIGNED,
-        DELIVERY_PARTNER_STATUS.AVAILABLE,
-        DELIVERY_PARTNER_STATUS.OFFLINE,
-        DELIVERY_PARTNER_STATUS.ON_BREAK,
-        DELIVERY_PARTNER_STATUS.ON_DELIVERY,
-      ],
+      enum: Object.values(DELIVERY_PARTNER_STATUS),
       default: DELIVERY_PARTNER_STATUS.AVAILABLE,
       required: true,
     },
@@ -44,10 +39,14 @@ const partnerSchema = new Schema<IPartner>(
         ref: "Order",
       },
     ],
+
   },
   {
     timestamps: true,
   }
 );
+
+partnerSchema.index({ status: 1, createdAt: -1 });
+partnerSchema.index({ phone: 1, status: 1 });
 
 export default model<IPartner>("Partner", partnerSchema);

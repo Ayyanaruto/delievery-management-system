@@ -91,7 +91,7 @@ export default function RegisterPage() {
                 id="phone"
                 type="tel"
                 placeholder="+91 9876543210"
-                value={phone}
+                value={`${phone}`}
                 onChange={(e) => setPhone(e.target.value)}
                 required={role === Role.PARTNER}
               />

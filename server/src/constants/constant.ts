@@ -26,7 +26,7 @@ export const enum ROLE {
   ADMIN = "ADMIN",
   PARTNER = "PARTNER",
 }
-export const enum DELIVERY_PARTNER_STATUS {
+export  enum DELIVERY_PARTNER_STATUS {
   AVAILABLE = "AVAILABLE",
   OFFLINE = "OFFLINE",
   ON_BREAK = "ON_BREAK",
@@ -42,7 +42,9 @@ export const enum VALIDATION_ERROR_MESSAGE {
 
   INVALID_EMAIL = "Please enter a valid email address.",
   INVALID_PASSWORD = "Password must be at least 6 characters long.",
-  INVALID_PHONE = "Please enter a valid 10-digit phone number."
+  INVALID_PHONE = "Please enter a valid 10-digit phone number.",
+
+  INVALID_COORDINATES ="Coordinates must contain exactly 2 values [longitude, latitude]"
 }
 
 export enum ConsoleColor {
@@ -65,6 +67,6 @@ export enum StatusColor {
 
 export enum ElementColor {
   URL = "\x1b[36m",
-  TIME = "\x1b[35m", 
-  SIZE = "\x1b[90m", 
+  TIME = "\x1b[35m",
+  SIZE = "\x1b[90m",
 }
