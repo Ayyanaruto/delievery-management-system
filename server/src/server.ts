@@ -21,7 +21,14 @@ const version = config.api.version
 const port = config.node.port || "3000";
 
 const corsOptions = {
-  origin: true,
+  origin: process.env.NODE_ENV === 'production'
+    ? [
+        process.env.FRONTEND_URL,
+        process.env.RENDER_EXTERNAL_URL,
+        /\.render\.com$/,
+        /\.onrender\.com$/
+      ].filter((origin): origin is string | RegExp => Boolean(origin))
+    : true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
