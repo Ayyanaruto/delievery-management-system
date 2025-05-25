@@ -19,7 +19,22 @@ const app = express();
 const base = config.api.base
 const version = config.api.version
 const port = config.node.port || "3000";
-app.use(cors())
+
+const corsOptions = {
+  origin: [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://localhost:4173",
+    "https://delivery-management-system.onrender.com",
+    process.env.FRONTEND_URL
+  ].filter((url): url is string => Boolean(url)),
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morganMiddleware);
 
