@@ -21,36 +21,25 @@ const version = config.api.version
 const port = config.node.port || "3000";
 
 const corsOptions = {
-  origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
-    const allowedOrigins = [
-      "http://localhost:3000",
-      "http://localhost:5173",
-      "http://localhost:4173",
-      "http://localhost:5000",
-      "https://delivery-management-system.onrender.com",
-      process.env.FRONTEND_URL
-    ].filter(Boolean);
-
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      return callback(new Error('Not allowed by CORS'), false);
-    }
-  },
+  origin: true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
   exposedHeaders: ['Set-Cookie'],
-  optionsSuccessStatus: 200,
-  preflightContinue: false
+  optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
 app.use(express.json());
 app.use(morganMiddleware);
+
+app.use((req, _res, next) => {
+  logger.info(`${req.method} ${req.path}`, {
+    origin: req.get('Origin'),
+    userAgent: req.get('User-Agent')
+  });
+  next();
+});
 
 const startServer = async () => {
   await Database.connect();
