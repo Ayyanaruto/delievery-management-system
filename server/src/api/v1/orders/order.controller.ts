@@ -6,7 +6,7 @@ import {
 import { NextFunction, Request, Response } from "express";
 import { AssignmentService } from "./assignment.service";
 import OrderService from "./orders.service";
-import { CreateOrder } from "./orders.types";
+import { CreateOrder, OrderStatus } from "./orders.types";
 
 export const orderController = {
   createOrder: async (
@@ -17,14 +17,12 @@ export const orderController = {
     try {
       const orderData = req.body as CreateOrder;
 
-      // Validate required fields
       if (!orderData.customer || !orderData.customerPhone || !orderData.pickupAddress ||
           !orderData.deliveryAddress || !orderData.items || !orderData.pickupAddressCord ||
           !orderData.deliveryAddressCord) {
         throw new BadRequestError("All required fields must be provided");
       }
 
-      // Validate coordinate structure
       if (!orderData.pickupAddressCord.coordinates || !orderData.deliveryAddressCord.coordinates ||
           orderData.pickupAddressCord.coordinates.length !== 2 ||
           orderData.deliveryAddressCord.coordinates.length !== 2) {
@@ -187,7 +185,6 @@ export const orderController = {
         throw new BadRequestError("Order ID is required");
       }
 
-      // Validate coordinates if they're being updated
       if (updateData.pickupAddressCord && (!updateData.pickupAddressCord.coordinates ||
           updateData.pickupAddressCord.coordinates.length !== 2)) {
         throw new BadRequestError("Valid pickup coordinates are required");
@@ -239,6 +236,45 @@ export const orderController = {
         data: {
           message: "Order deleted successfully",
           order: deletedOrder,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  updateOrderStatus: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const { orderId } = req.params;
+      const { status } = req.body;
+
+      if (!orderId) {
+        throw new BadRequestError("Order ID is required");
+      }
+
+      if (!status) {
+        throw new BadRequestError("Status is required");
+      }
+
+      if (!Object.values(OrderStatus).includes(status)) {
+        throw new BadRequestError("Invalid status value");
+      }
+
+      const updatedOrder = await OrderService.updateOrder(orderId, { status });
+
+      if (!updatedOrder) {
+        throw new ValidationError("Order not found");
+      }
+
+      res.status(HttpStatusCode.SUCCESS).json({
+        success: true,
+        data: {
+          message: "Order status updated successfully",
+          order: updatedOrder,
         },
       });
     } catch (error) {

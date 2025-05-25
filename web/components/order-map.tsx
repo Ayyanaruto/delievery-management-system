@@ -1,5 +1,6 @@
 "use client"
 
+import type { Order } from "@/types/order"
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
 import { useEffect, useState } from "react"
@@ -12,7 +13,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 })
 
-// Custom icons for pickup and delivery
 const pickupIcon = new L.Icon({
   iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
   iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
@@ -34,33 +34,44 @@ const deliveryIcon = new L.Icon({
 })
 
 interface OrderMapProps {
-  pickupAddress: string
-  deliveryAddress: string
+  pickupAddress?: string
+  deliveryAddress?: string
   pickupCoords?: {
     type: string
-    coordinates: [number, number] // GeoJSON format: [lng, lat]
+    coordinates: [number, number]
   }
   deliveryCoords?: {
     type: string
-    coordinates: [number, number] // GeoJSON format: [lng, lat]
+    coordinates: [number, number]
   }
+  // For multiple orders (partner dashboard)
+  orders?: Order[]
 }
 
 export default function OrderMap({
   pickupAddress,
   deliveryAddress,
   pickupCoords,
-  deliveryCoords
+  deliveryCoords,
+  orders
 }: OrderMapProps) {
   const [coordinates, setCoordinates] = useState<{
     pickup: { lat: number; lng: number } | null
     delivery: { lat: number; lng: number } | null
+    orderMarkers: Array<{
+      id: string
+      pickup: { lat: number; lng: number } | null
+      delivery: { lat: number; lng: number } | null
+      customer: string
+      status: string
+    }>
   }>({
     pickup: null,
-    delivery: null
+    delivery: null,
+    orderMarkers: []
   })
 
-  const [center, setCenter] = useState<[number, number]>([28.6139, 77.2090]) // Default to Delhi
+  const [center, setCenter] = useState<[number, number]>([28.6139, 77.2090])
 
   // Geocoding function to convert addresses to coordinates
   const geocodeAddress = async (address: string): Promise<{ lat: number; lng: number } | null> => {
@@ -83,9 +94,7 @@ export default function OrderMap({
     }
   }
 
-  // Helper function to convert GeoJSON coordinates to Leaflet format
   const convertGeoJSONToLatLng = (coords: { coordinates: [number, number] }): { lat: number; lng: number } => {
-    // GeoJSON format is [longitude, latitude], Leaflet expects [latitude, longitude]
     return {
       lat: coords.coordinates[1],
       lng: coords.coordinates[0]
@@ -94,44 +103,87 @@ export default function OrderMap({
 
   useEffect(() => {
     const fetchCoordinates = async () => {
-      let pickup: { lat: number; lng: number } | null = null
-      let delivery: { lat: number; lng: number } | null = null
+      if (!orders && pickupAddress && deliveryAddress) {
+        let pickup: { lat: number; lng: number } | null = null
+        let delivery: { lat: number; lng: number } | null = null
 
-      // Convert GeoJSON coordinates if available, otherwise geocode
-      if (pickupCoords && pickupCoords.coordinates && pickupCoords.coordinates.length === 2) {
-        pickup = convertGeoJSONToLatLng(pickupCoords)
-        console.log("Pickup coords converted:", pickup)
-      } else {
-        pickup = await geocodeAddress(pickupAddress)
-        console.log("Pickup coords geocoded:", pickup)
+        if (pickupCoords && pickupCoords.coordinates && pickupCoords.coordinates.length === 2) {
+          pickup = convertGeoJSONToLatLng(pickupCoords)
+        } else {
+          pickup = await geocodeAddress(pickupAddress)
+        }
+
+        if (deliveryCoords && deliveryCoords.coordinates && deliveryCoords.coordinates.length === 2) {
+          delivery = convertGeoJSONToLatLng(deliveryCoords)
+        } else {
+          delivery = await geocodeAddress(deliveryAddress)
+        }
+
+        setCoordinates({ pickup, delivery, orderMarkers: [] })
+
+        // Set center to midpoint of pickup and delivery, or first available location
+        if (pickup && delivery) {
+          const centerLat = (pickup.lat + delivery.lat) / 2
+          const centerLng = (pickup.lng + delivery.lng) / 2
+          setCenter([centerLat, centerLng])
+        } else if (pickup) {
+          setCenter([pickup.lat, pickup.lng])
+        } else if (delivery) {
+          setCenter([delivery.lat, delivery.lng])
+        }
       }
+      else if (orders && orders.length > 0) {
+        const orderMarkers = await Promise.all(
+          orders.map(async (order) => {
+            let pickup: { lat: number; lng: number } | null = null
+            let delivery: { lat: number; lng: number } | null = null
 
-      if (deliveryCoords && deliveryCoords.coordinates && deliveryCoords.coordinates.length === 2) {
-        delivery = convertGeoJSONToLatLng(deliveryCoords)
-        console.log("Delivery coords converted:", delivery)
-      } else {
-        delivery = await geocodeAddress(deliveryAddress)
-        console.log("Delivery coords geocoded:", delivery)
-      }
+            if (order.pickupAddressCord &&
+                order.pickupAddressCord.coordinates &&
+                Array.isArray(order.pickupAddressCord.coordinates) &&
+                order.pickupAddressCord.coordinates.length === 2) {
+              pickup = convertGeoJSONToLatLng(order.pickupAddressCord)
+            } else if (order.pickupAddress) {
+              pickup = await geocodeAddress(order.pickupAddress)
+            }
 
-      setCoordinates({ pickup, delivery })
+            if (order.deliveryAddressCord &&
+                order.deliveryAddressCord.coordinates &&
+                Array.isArray(order.deliveryAddressCord.coordinates) &&
+                order.deliveryAddressCord.coordinates.length === 2) {
+              delivery = convertGeoJSONToLatLng(order.deliveryAddressCord)
+            } else if (order.deliveryAddress) {
+              delivery = await geocodeAddress(order.deliveryAddress)
+            }
 
-      // Set center to midpoint of pickup and delivery, or first available location
-      if (pickup && delivery) {
-        const centerLat = (pickup.lat + delivery.lat) / 2
-        const centerLng = (pickup.lng + delivery.lng) / 2
-        setCenter([centerLat, centerLng])
-      } else if (pickup) {
-        setCenter([pickup.lat, pickup.lng])
-      } else if (delivery) {
-        setCenter([delivery.lat, delivery.lng])
+            return {
+              id: order._id || order.id || "",
+              pickup,
+              delivery,
+              customer: order.customer,
+              status: order.status || "assigned"
+            }
+          })
+        )
+
+        setCoordinates({ pickup: null, delivery: null, orderMarkers })
+
+        const allCoords = orderMarkers.flatMap(marker =>
+          [marker.pickup, marker.delivery].filter(Boolean)
+        )
+
+        if (allCoords.length > 0) {
+          const avgLat = allCoords.reduce((sum, coord) => sum + coord!.lat, 0) / allCoords.length
+          const avgLng = allCoords.reduce((sum, coord) => sum + coord!.lng, 0) / allCoords.length
+          setCenter([avgLat, avgLng])
+        }
       }
     }
 
     fetchCoordinates()
-  }, [pickupAddress, deliveryAddress, pickupCoords, deliveryCoords])
+  }, [pickupAddress, deliveryAddress, pickupCoords, deliveryCoords, orders])
 
-  if (!coordinates.pickup && !coordinates.delivery) {
+  if (!coordinates.pickup && !coordinates.delivery && coordinates.orderMarkers.length === 0) {
     return (
       <div className="h-64 bg-gray-100 rounded-md flex items-center justify-center">
         <p className="text-gray-500">Unable to load map locations</p>
@@ -187,6 +239,46 @@ export default function OrderMap({
             opacity={0.7}
           />
         )}
+
+        {coordinates.orderMarkers.map((orderMarker) => (
+          <div key={orderMarker.id}>
+            {orderMarker.pickup && (
+              <Marker position={[orderMarker.pickup.lat, orderMarker.pickup.lng]} icon={pickupIcon}>
+                <Popup>
+                  <div>
+                    <strong>Pickup for {orderMarker.customer}</strong>
+                    <br />
+                    <span className="text-xs">Status: {orderMarker.status}</span>
+                  </div>
+                </Popup>
+              </Marker>
+            )}
+
+            {orderMarker.delivery && (
+              <Marker position={[orderMarker.delivery.lat, orderMarker.delivery.lng]} icon={deliveryIcon}>
+                <Popup>
+                  <div>
+                    <strong>Delivery for {orderMarker.customer}</strong>
+                    <br />
+                    <span className="text-xs">Status: {orderMarker.status}</span>
+                  </div>
+                </Popup>
+              </Marker>
+            )}
+
+            {orderMarker.pickup && orderMarker.delivery && (
+              <Polyline
+                positions={[
+                  [orderMarker.pickup.lat, orderMarker.pickup.lng],
+                  [orderMarker.delivery.lat, orderMarker.delivery.lng]
+                ]}
+                color={orderMarker.status === "assigned" ? "orange" : "blue"}
+                weight={2}
+                opacity={0.6}
+              />
+            )}
+          </div>
+        ))}
       </MapContainer>
 
       <style jsx global>{`

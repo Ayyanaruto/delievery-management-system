@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 
 import {
   BadRequestError,
@@ -14,13 +14,13 @@ import { HttpStatusCode, ROLE } from "@/constants/constant";
 import config from "@/config/config";
 
 import {
-  RegisterRequestBody,
   LoginRequestBody,
+  RegisterRequestBody,
   TokenPayload,
 } from "./auth.types";
 
-import AuthService from "./auth.service";
 import PartnerService from "../partners/partner.service";
+import AuthService from "./auth.service";
 
 if (!config.jwt.secret) {
   logger.error("JWT_SECRET is not set in environment variables");
@@ -60,6 +60,7 @@ export const authController = {
           email: user.email,
           role: user.role,
           token,
+          partnerId: user.partnerId,
         },
       });
     } catch (error) {

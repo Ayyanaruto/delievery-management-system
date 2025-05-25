@@ -11,5 +11,6 @@ orderRoutes.put("/:orderId", orderController.updateOrder);
 orderRoutes.delete("/:orderId", orderController.deleteOrder);
 orderRoutes.post("/:orderId/assign", orderController.assignOrder);
 orderRoutes.post("/:orderId/unassign", orderController.unassignOrder);
+orderRoutes.patch("/:orderId/status", orderController.updateOrderStatus);
 
 export default orderRoutes

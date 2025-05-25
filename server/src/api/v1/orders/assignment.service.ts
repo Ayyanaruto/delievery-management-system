@@ -18,7 +18,6 @@ export class AssignmentService {
     let partner;
 
     if (partnerId) {
-      // Assign to specific partner
       partner = await PartnerModel.findById(partnerId);
       if (!partner) {
         throw new ValidationError("Partner not found");
@@ -27,7 +26,6 @@ export class AssignmentService {
         throw new BadRequestError("Partner is not available");
       }
     } else {
-      // Auto-assign to nearest available partner
       partner = await this.findNearestAvailablePartner(order.pickupAddressCord.coordinates);
       if (!partner) {
         throw new ValidationError("No available partners found");
@@ -58,19 +56,16 @@ export class AssignmentService {
 
     const partner = await PartnerModel.findById(order.assignedTo);
     if (partner) {
-      // Remove order from partner's assigned orders
       partner.assignedOrders = partner.assignedOrders.filter(
         (orderObjectId) => orderObjectId.toString() !== orderId
       );
 
-      // Update partner status if no more orders
       if (partner.assignedOrders.length === 0) {
         partner.status = DELIVERY_PARTNER_STATUS.AVAILABLE;
       }
       await partner.save();
     }
 
-    // Update order
     order.assignedTo = null;
     order.status = OrderStatus.PENDING;
     await order.save();

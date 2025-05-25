@@ -39,7 +39,6 @@ export default function RegisterPage() {
     setIsLoading(true)
 
     try {
-      // Call the register API
       const userData = { name, email, password, role, phone }
       await authAPI.register(userData)
 

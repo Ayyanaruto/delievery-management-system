@@ -3,7 +3,7 @@ import { Document } from "mongoose";
 export enum OrderStatus {
   PENDING = 'pending',
   ASSIGNED = 'assigned',
-  IN_TRANSIT = 'in-transit',
+  IN_PROGRESS = 'in_progress',
   DELIVERED = 'delivered',
   CANCELLED = 'cancelled'
 }
@@ -42,4 +42,5 @@ export interface CreateOrder {
     coordinates: [number, number];
   };
   items: string[];
+  status?:OrderStatus
 }
