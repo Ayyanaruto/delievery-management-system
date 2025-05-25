@@ -98,7 +98,7 @@ export default function NewOrderPage() {
         items: items.split("\n").filter(item => item.trim() !== ""),
       }
 
-      const response = await ordersAPI.create(orderData)
+      await ordersAPI.create(orderData)
 
       toast({
         title: "Order created",

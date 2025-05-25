@@ -7,10 +7,23 @@ export interface Partner {
   assignedOrders:string[]
   createdAt:Date
   updatedAt:Date
-
 }
 
-export  enum DELIVERY_PARTNER_STATUS {
+export interface CreatePartnerData {
+  name: string
+  email: string
+  phone: string
+  status?: DELIVERY_PARTNER_STATUS
+}
+
+export interface UpdatePartnerData {
+  name?: string
+  email?: string
+  phone?: string
+  status?: DELIVERY_PARTNER_STATUS
+}
+
+export enum DELIVERY_PARTNER_STATUS {
   AVAILABLE = "AVAILABLE",
   OFFLINE = "OFFLINE",
   ON_BREAK = "ON_BREAK",

@@ -63,9 +63,10 @@ export default function PartnerDashboard() {
         setCompletedOrders(completed)
       } catch (error) {
         console.error("Error fetching partner data:", error)
+        const errorMessage = error instanceof Error ? error.message : "Failed to load dashboard data"
         toast({
           title: "Error",
-          description: "Failed to load dashboard data",
+          description: errorMessage,
           variant: "destructive",
         })
       } finally {
@@ -87,13 +88,13 @@ export default function PartnerDashboard() {
       if (newStatus === "delivered") {
         const order = assignedOrders.find((o) => (o._id || o.id) === orderId)
         if (order) {
-          setCompletedOrders((prev) => [...prev, { ...order, status: "delivered" as any }])
+          setCompletedOrders((prev) => [...prev, { ...order, status: "delivered" as Order['status'] }])
           setAssignedOrders((prev) => prev.filter((o) => (o._id || o.id) !== orderId))
         }
       } else if (newStatus === "in_progress") {
         setAssignedOrders((prev) =>
           prev.map((o) =>
-            (o._id || o.id) === orderId ? { ...o, status: "in_progress" as any } : o
+            (o._id || o.id) === orderId ? { ...o, status: "in_progress" as Order['status'] } : o
           )
         )
       }
@@ -104,9 +105,10 @@ export default function PartnerDashboard() {
       })
     } catch (error) {
       console.error("Failed to update status:", error)
+      const errorMessage = error instanceof Error ? error.message : "There was a problem updating the order status."
       toast({
         title: "Failed to update status",
-        description: "There was a problem updating the order status.",
+        description: errorMessage,
         variant: "destructive",
       })
     }
@@ -125,7 +127,7 @@ export default function PartnerDashboard() {
         throw new Error(response.message || "Failed to update status")
       }
 
-      setPartnerInfo((prev) => (prev ? { ...prev, status: newStatus as any } : null))
+      setPartnerInfo((prev) => (prev ? { ...prev, status: newStatus as Partner['status'] } : null))
 
       toast({
         title: "Status updated",

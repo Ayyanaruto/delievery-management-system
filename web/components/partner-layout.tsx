@@ -1,12 +1,11 @@
 "use client"
 
-import type React from "react"
-
 import { Button } from "@/components/ui/button"
 import { LayoutDashboard, LogOut, Map, Menu, Package, User, X } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import type React from "react"
+import { useCallback, useEffect, useState } from "react"
 
 export default function PartnerLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
@@ -25,10 +24,10 @@ export default function PartnerLayout({ children }: { children: React.ReactNode 
     }
   }, [router])
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     localStorage.removeItem("user")
     router.push("/login")
-  }
+  }, [router])
 
   useEffect(() => {
     const checkTokenExpiry = () => {
@@ -49,7 +48,7 @@ export default function PartnerLayout({ children }: { children: React.ReactNode 
     const interval = setInterval(checkTokenExpiry, 60 * 60 * 1000)
 
     return () => clearInterval(interval)
-  }, [router])
+  }, [handleLogout])
 
   return (
     <div className="flex min-h-screen bg-gray-50">

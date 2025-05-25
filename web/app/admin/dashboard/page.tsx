@@ -28,9 +28,16 @@ const getStatusColor = (status: string) => {
   }
 }
 
+interface Order {
+  _id: string
+  customer: string
+  deliveryAddress: string
+  status: string
+}
+
 export default function AdminDashboard() {
   const router = useRouter()
-  const [orders, setOrders] = useState<any[]>([])
+  const [orders, setOrders] = useState<Order[]>([])
   const [partners, setPartners] = useState<Partner[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -53,7 +60,6 @@ export default function AdminDashboard() {
   }, [])
 
   const pendingOrders = orders.filter((order) => order.status === "pending")
-  const assignedOrders = orders.filter((order) => order.status === "assigned")
   const completedOrders = orders.filter((order) => order.status === "delivered")
   const availablePartners = partners.filter((partner) => partner.status === DELIVERY_PARTNER_STATUS.AVAILABLE)
 

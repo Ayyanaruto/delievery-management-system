@@ -8,23 +8,32 @@ import type { Order } from "@/types/order"
 import { ArrowLeft, Edit, MapPin, Trash2 } from "lucide-react"
 import dynamic from "next/dynamic"
 import { useRouter } from "next/navigation"
-import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
 const OrderMap = dynamic(() => import("@/components/order-map"), {
   ssr: false,
   loading: () => <div className="h-64 bg-gray-100 rounded-md flex items-center justify-center">Loading map...</div>
 })
 
-export default async function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+export default function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
   const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
-
-  const resolvedParams = await params
+  const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null)
 
   useEffect(() => {
+    const resolveParams = async () => {
+      const resolved = await params
+      setResolvedParams(resolved)
+    }
+    resolveParams()
+  }, [params])
+
+  useEffect(() => {
+    if (!resolvedParams) return
+
     const fetchOrder = async () => {
       try {
         setLoading(true)
@@ -44,10 +53,10 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
     }
 
     fetchOrder()
-  }, [resolvedParams.id])
+  }, [resolvedParams])
 
   const handleDeleteOrder = async () => {
-    if (!window.confirm("Are you sure you want to delete this order? This action cannot be undone.")) {
+    if (!resolvedParams || !window.confirm("Are you sure you want to delete this order? This action cannot be undone.")) {
       return
     }
 
@@ -195,7 +204,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
             </CardHeader>
             <CardContent>
               <ul className="space-y-2">
-                {order.items.map((item: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined, index: Key | null | undefined) => (
+                {order.items.map((item: string, index: number) => (
                   <li key={index} className="flex items-center">
                     <span className="h-2 w-2 rounded-full bg-primary mr-2"></span>
                     {item}

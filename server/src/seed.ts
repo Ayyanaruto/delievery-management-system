@@ -162,7 +162,8 @@ async function hashPassword(password: string): Promise<string> {
 
 async function connectDatabase() {
   try {
-    const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/rentkar';
+    const mongoUri = "mongodb+srv://teenagersofficial1:gloI4k38I7yfFz9U@rentkar.fv7zzjk.mongodb.net/?retryWrites=true&w=majority&appName=Rentkar"
+
     await mongoose.connect(mongoUri);
     console.log('✅ Connected to MongoDB');
   } catch (error) {

@@ -1,4 +1,5 @@
 import { Role } from "@/types/auth"
+import { UpdatePartnerData } from "@/types/partner"
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1"
 
@@ -70,7 +71,7 @@ export const partnersAPI = {
     return fetchAPI(`/partners/${id}`)
   },
 
-  update: async (id: string, partnerData: unknown) => {
+  update: async (id: string, partnerData: UpdatePartnerData) => {
     return fetchAPI(`/partners/${id}`, {
       method: "PUT",
       body: JSON.stringify(partnerData),
@@ -100,14 +101,14 @@ export const ordersAPI = {
     return fetchAPI(`/orders/${id}`)
   },
 
-  create: async (orderData: any) => {
+  create: async (orderData: Record<string, unknown>) => {
     return fetchAPI("/orders", {
       method: "POST",
       body: JSON.stringify(orderData),
     })
   },
 
-  update: async (id: string, orderData: any) => {
+  update: async (id: string, orderData: Record<string, unknown>) => {
     return fetchAPI(`/orders/${id}`, {
       method: "PUT",
       body: JSON.stringify(orderData),
@@ -120,26 +121,25 @@ export const ordersAPI = {
     })
   },
 
-  assign: async (id: string, partnerId: string) => {
-    return fetchAPI(`/orders/${id}/assign`, {
-      method: "POST",
+  assign: async (orderId: string, partnerId: string) => {
+    return fetchAPI(`/orders/${orderId}/assign`, {
+      method: "PATCH",
       body: JSON.stringify({ partnerId }),
     })
   },
 
   unassign: async (id: string) => {
     return fetchAPI(`/orders/${id}/unassign`, {
-      method: "POST",
+      method: "PATCH",
     })
   },
 
   getPartnerOrders: async (partnerId: string) => {
-
     return fetchAPI(`/orders/partner/${partnerId}`)
   },
 
-  updateStatus: async (id: string, status: string) => {
-    return fetchAPI(`/orders/${id}/status`, {
+  updateStatus: async (orderId: string, status: string) => {
+    return fetchAPI(`/orders/${orderId}/status`, {
       method: "PATCH",
       body: JSON.stringify({ status }),
     })

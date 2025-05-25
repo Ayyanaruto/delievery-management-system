@@ -8,23 +8,41 @@ import type { Order } from "@/types/order"
 import { ArrowLeft, MapPin, Phone, User } from "lucide-react"
 import dynamic from "next/dynamic"
 import { useRouter } from "next/navigation"
-import React, { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
 const OrderMap = dynamic(() => import("@/components/order-map"), {
   ssr: false,
   loading: () => <div className="h-64 bg-gray-100 rounded-md flex items-center justify-center">Loading map...</div>
 })
 
-export default function PartnerOrderDetailsPage({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: Promise<{ id: string }>
+}
+
+export default function PartnerOrderDetailsPage({ params }: PageProps) {
   const router = useRouter()
   const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
-  // @ts-ignore
-  const resolvedParams = React.use(params) as { id: string }
+  const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null)
 
   useEffect(() => {
+    const resolveParams = async () => {
+      try {
+        const resolved = await params
+        setResolvedParams(resolved)
+      } catch (err) {
+        console.error("Error resolving params:", err)
+        setError("Failed to load page parameters")
+      }
+    }
+
+    resolveParams()
+  }, [params])
+
+  useEffect(() => {
+    if (!resolvedParams) return
+
     const fetchOrder = async () => {
       try {
         setLoading(true)
@@ -44,7 +62,7 @@ export default function PartnerOrderDetailsPage({ params }: { params: { id: stri
     }
 
     fetchOrder()
-  }, [resolvedParams.id])
+  }, [resolvedParams])
 
   if (loading) {
     return (
@@ -159,7 +177,7 @@ export default function PartnerOrderDetailsPage({ params }: { params: { id: stri
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {order.items.map((item: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined, index: Key | null | undefined) => (
+              {order.items.map((item: string, index: number) => (
                 <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg">
                   <span className="h-3 w-3 rounded-full bg-primary mr-3"></span>
                   <span className="font-medium">{item}</span>

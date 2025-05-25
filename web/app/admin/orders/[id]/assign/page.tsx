@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ordersAPI, partnersAPI } from "@/lib/api"
 import { ArrowLeft, CheckCircle, Clock, Loader2, MapPin, Package, Phone, User, XCircle } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { toast } from "sonner"
 
 interface Order {
@@ -49,11 +49,7 @@ export default function AssignOrderPage() {
   const [isAssigning, setIsAssigning] = useState(false)
   const [isUnassigning, setIsUnassigning] = useState(false)
 
-  useEffect(() => {
-    fetchOrderAndPartners()
-  }, [orderId])
-
-  const fetchOrderAndPartners = async () => {
+  const fetchOrderAndPartners = React.useCallback(async () => {
     try {
       setIsLoading(true)
       const [orderResponse, partnersResponse] = await Promise.all([
@@ -71,13 +67,18 @@ export default function AssignOrderPage() {
         setPartners(availablePartners)
         setAllPartners(partnersResponse.data)
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error fetching data:", error)
-      toast.error(error.message || "Failed to fetch order details")
+      const errorMessage = error instanceof Error ? error.message : "Failed to fetch order details"
+      toast.error(errorMessage)
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [orderId])
+
+  useEffect(() => {
+    fetchOrderAndPartners()
+  }, [fetchOrderAndPartners])
 
   const handleAssign = async () => {
     if (!selectedPartnerId) {
@@ -94,8 +95,9 @@ export default function AssignOrderPage() {
         await fetchOrderAndPartners()
         setSelectedPartnerId("")
       }
-    } catch (error: any) {
-      toast.error(error.message || "Failed to assign order")
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to assign order"
+      toast.error(errorMessage)
     } finally {
       setIsAssigning(false)
     }
@@ -110,8 +112,9 @@ export default function AssignOrderPage() {
         toast.success("Order unassigned successfully")
         await fetchOrderAndPartners()
       }
-    } catch (error: any) {
-      toast.error(error.message || "Failed to unassign order")
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to unassign order"
+      toast.error(errorMessage)
     } finally {
       setIsUnassigning(false)
     }
@@ -126,8 +129,9 @@ export default function AssignOrderPage() {
         toast.success("Order auto-assigned successfully")
         await fetchOrderAndPartners()
       }
-    } catch (error: any) {
-      toast.error(error.message || "Failed to auto-assign order")
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to auto-assign order"
+      toast.error(errorMessage)
     } finally {
       setIsAssigning(false)
     }
