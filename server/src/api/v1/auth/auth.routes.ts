@@ -4,8 +4,8 @@ import { authenticate } from "./auth.middleware";
 
 const authRoutes = Router();
 
-authRoutes.post("/login",authController.login)
+authRoutes.post("/login", authController.login);
 authRoutes.post("/register", authController.register);
-authRoutes.get("/me",authenticate,authController.getCurrentUser)
+authRoutes.get("/me", authenticate, authController.getCurrentUser);
 
-export default authRoutes
+export default authRoutes;

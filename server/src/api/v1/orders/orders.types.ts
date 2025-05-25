@@ -23,7 +23,9 @@ export interface IOrder extends Document {
   };
   items: string[];
   status: OrderStatus;
-  assignedTo?: string|null;
+  assignedTo?: {
+    _id?: string
+  } | null;
   createdAt: Date;
   updatedAt: Date;
 }

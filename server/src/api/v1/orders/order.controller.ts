@@ -1,6 +1,7 @@
-import { HttpStatusCode } from "@/constants/constant";
+import { HttpStatusCode, ROLE } from "@/constants/constant";
 import {
   BadRequestError,
+  ForbiddenError,
   ValidationError
 } from "@/lib/error";
 import { NextFunction, Request, Response } from "express";
@@ -81,10 +82,19 @@ export const orderController = {
       if (!orderId) {
         throw new BadRequestError("Please provide Order Id");
       }
+
       const order = await OrderService.findOrdersById(orderId);
       if (!order) {
         throw new ValidationError("Order does not exist");
       }
+
+      if (req.user?.role === ROLE.PARTNER) {
+        const userPartnerId = req.user?.metadata?.partnerId;
+        if (order.assignedTo?._id?.toString() !== userPartnerId) {
+          throw new ForbiddenError("You can only access your assigned orders");
+        }
+      }
+
       res.status(HttpStatusCode.SUCCESS).json({
         success: true,
         data: order
@@ -159,6 +169,13 @@ export const orderController = {
 
       if (!partnerId) {
         throw new BadRequestError("Partner ID is required");
+      }
+
+      if (req.user?.role === ROLE.PARTNER) {
+        const userPartnerId = req.user?.metadata?.partnerId;
+        if (userPartnerId !== partnerId) {
+          throw new ForbiddenError("You can only access your own orders");
+        }
       }
 
       const orders = await AssignmentService.getPartnerOrders(partnerId);
@@ -262,6 +279,18 @@ export const orderController = {
 
       if (!Object.values(OrderStatus).includes(status)) {
         throw new BadRequestError("Invalid status value");
+      }
+
+      if (req.user?.role === ROLE.PARTNER) {
+        const order = await OrderService.findOrdersById(orderId);
+        if (!order) {
+          throw new ValidationError("Order not found");
+        }
+
+        const userPartnerId = req.user?.metadata?.partnerId;
+        if (order.assignedTo?._id?.toString() !== userPartnerId) {
+          throw new ForbiddenError("You can only update your assigned orders");
+        }
       }
 
       const updatedOrder = await OrderService.updateOrder(orderId, { status });

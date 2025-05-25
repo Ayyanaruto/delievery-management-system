@@ -16,6 +16,8 @@
     "start": "npm run build && node -r module-alias/register dist/server.js",
     "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/server.ts",
     "build": "tsc && tsc-alias",
+    "seed": "ts-node -r tsconfig-paths/register src/seed.ts",
+    "seed:build": "npm run build && node -r module-alias/register dist/seed.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
