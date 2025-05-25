@@ -8,22 +8,21 @@ import type { Order } from "@/types/order"
 import { ArrowLeft, Edit, MapPin, Trash2 } from "lucide-react"
 import dynamic from "next/dynamic"
 import { useRouter } from "next/navigation"
-import React, { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from "react"
+import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from "react"
 
 const OrderMap = dynamic(() => import("@/components/order-map"), {
   ssr: false,
   loading: () => <div className="h-64 bg-gray-100 rounded-md flex items-center justify-center">Loading map...</div>
 })
 
-export default function OrderDetailsPage({ params }: { params: { id: string } }) {
+export default async function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
   const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
 
-  // @ts-ignore
-  const resolvedParams = React.use(params) as { id: string }
+  const resolvedParams = await params
 
   useEffect(() => {
     const fetchOrder = async () => {

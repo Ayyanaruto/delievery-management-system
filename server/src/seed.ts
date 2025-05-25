@@ -235,8 +235,6 @@ async function seedOrders(partners: any[]) {
 
     const createdOrders = await Order.insertMany(ordersWithAssignments);
     console.log(`✅ Created ${createdOrders.length} orders`);
-
-    // Update partner assigned orders
     for (const order of createdOrders) {
       if (order.assignedTo) {
         await Partner.findByIdAndUpdate(
@@ -255,7 +253,6 @@ async function seedOrders(partners: any[]) {
 
 async function updateUserPartnerIds(users: any[], partners: any[]) {
   try {
-    // Update partner users with their corresponding partner IDs
     for (let i = 0; i < partners.length; i++) {
       const partnerUser = users.find((user: any) => user.email === partners[i].email);
       if (partnerUser) {
