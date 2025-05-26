@@ -7,8 +7,8 @@ const orderRoutes = Router();
 // Admin only routes
 orderRoutes.post("/", authenticate, authorizeAdmin, orderController.createOrder);
 orderRoutes.get("/", authenticate, authorizeAdmin, orderController.getAllOrders);
-orderRoutes.post("/:orderId/assign", authenticate, authorizeAdmin, orderController.assignOrder);
-orderRoutes.post("/:orderId/unassign", authenticate, authorizeAdmin, orderController.unassignOrder);
+orderRoutes.patch("/:orderId/assign", authenticate, authorizeAdmin, orderController.assignOrder);
+orderRoutes.patch("/:orderId/unassign", authenticate, authorizeAdmin, orderController.unassignOrder);
 orderRoutes.put("/:orderId", authenticate, authorizeAdmin, orderController.updateOrder);
 orderRoutes.delete("/:orderId", authenticate, authorizeAdmin, orderController.deleteOrder);
 
